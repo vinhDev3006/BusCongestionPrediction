@@ -67,7 +67,7 @@ print(f"Mean Squared Error: {mse}")
 
 
 # -- Save the trained model to a file --
-model.save("model\\LSTM_1_model_saved_model")
+model.save(os.path.join("model","LSTM_1_model_saved_model"))
 
 
 # -- Example for making predictions --

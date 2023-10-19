@@ -1,13 +1,15 @@
 """
     TEST FROM USER INPUT
 """
+import os.path
+
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 
 # -- Load trained LSTM model --
-model = keras.models.load_model("model\\LSTM_1_model_saved_model")
+model = keras.models.load_model(os.path.join("model", "LSTM_1_model_saved_model"))
 
 # -- Load the MinMaxScaler used during training --
 scaler = MinMaxScaler()
