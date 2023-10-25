@@ -19,7 +19,6 @@ df['arrival_time'] = pd.to_datetime(df['arrival_time'])
 df = df.sort_values(by=['arrival_time'])
 
 # -- Select features and target --
-
 X = df[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'speed_kmh',
         'segment_max_speed_kmh', 'runtime_sec', 'direction_id', 'distance_m']]
 Y = df['congestion_level']
