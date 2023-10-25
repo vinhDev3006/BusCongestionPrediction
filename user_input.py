@@ -15,7 +15,7 @@ model = keras.models.load_model(os.path.join("model", "LSTM_1_model_saved_model"
 scaler = MinMaxScaler()
 
 # -- Load the training data --
-training_data = pd.read_csv("dataset\\pre_processed_data.csv")
+training_data = pd.read_csv(os.path.join("dataset", "pre_processed_data.csv"))
 
 # -- Fit the scaler with the training data --
 scaler.fit(training_data[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'speed_kmh',
