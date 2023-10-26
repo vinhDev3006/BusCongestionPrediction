@@ -43,7 +43,7 @@ timestamps = test['arrival_time'].iloc[seq_length - 1:num_objects]
 predicted_congestion = model.predict(X_seq_new)
 
 location = test[["stop_lat", "stop_lon", "next_lat", "next_lon", "arrival_hour", "arrival_minute"]]
-location["predicted_congestion"] = predicted_congestion
+location["congestion_level"] = predicted_congestion
 
 print(location)
 # Plot the predicted and actual congestion levels
