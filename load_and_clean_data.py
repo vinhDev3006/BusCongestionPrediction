@@ -130,5 +130,5 @@ df = df.sort_values(by=['trip_id','direction_id'])
 # df = df.sort_values(by=['arrival_time'])
 
 # print(df.info())
-df.to_csv('dataset\\pre_processed_data.csv', index=False)
+df.to_csv(os.path.join("dataset", "pre_processed_data.csv"), index=False)
 print(df.info())

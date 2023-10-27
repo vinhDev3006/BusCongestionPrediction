@@ -75,10 +75,9 @@ def run_model(route_id, direction_id, future_time):
     # Make predictions
     predicted_congestion = model.predict(X_seq_new)
 
-    location = main_data
-    location["congestion_level"] = predicted_congestion
+    main_data["congestion_level"] = predicted_congestion
 
-    print(location[["stop_lat","next_lat","congestion_level"]])
+    return main_data[["stop_lat","stop_lon","congestion_level"]]
 
 
-run_model(300025, 1, "2023-10-25 14:30:45")
+# run_model(300025, 1, "2023-10-25 23:50:00")
