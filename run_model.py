@@ -80,4 +80,4 @@ def run_model(route_id, direction_id, future_time):
     return main_data[["stop_lat","stop_lon","congestion_level"]]
 
 
-# run_model(300025, 1, "2023-10-25 23:50:00")
+# run_model(300025, 0, "2023-10-25 23:50:00")

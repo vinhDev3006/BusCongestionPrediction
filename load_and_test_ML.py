@@ -13,7 +13,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 model = keras.models.load_model(os.path.abspath(os.path.join("model", "LSTM_1_model_saved_model")))
 
 # Load the test dataset
-test = pd.read_csv(os.path.join("dataset", "test.csv"))
+test = pd.read_csv(os.path.join("dataset", "legacy_code/test.csv"))
 
 # Ensure the new data is preprocessed in the same way as the training data
 scaler = MinMaxScaler()

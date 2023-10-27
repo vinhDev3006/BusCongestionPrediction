@@ -58,10 +58,7 @@ class App(tk.Tk):
         direction_id = int(self.direction_id_entry.get())
         future_time = self.future_time_entry.get()
 
-        # Call the run_model function with the provided input
-        # self.marker_list = run_model(route_id, direction_id, future_time)
-        # path_positions = [marker.position for marker in self.marker_list]
-        # self.marker_path = self.map_widget.set_path(path_positions, color=congestion_level.MODERATE_CONGESTED.value)
+
         df = run_model(route_id, direction_id, future_time)
         location_list = list(zip(df['stop_lat'], df['stop_lon'], df['congestion_level']))
         self.marker_list = location_list
@@ -88,9 +85,10 @@ class App(tk.Tk):
             else:
                 level = congestion_level.HEAVILY_CONGESTED
 
-            self.map_widget.set_path([start[:2], end[:2]], color=level.value)  # Use color= to specify the color
+            self.map_widget.set_path([start[:2], end[:2]], color=level.value)
 
-
+        first_marker = location_list[0]
+        self.map_widget.set_position(first_marker[0], first_marker[1])
 
 
 

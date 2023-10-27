@@ -1,14 +1,4 @@
-.ipynb_checkpoints
-legacy_code
+/legacy_code
+/.ipynb_checkpoints
+.~lock.new.csv#
 .gitattributes
-bus_anal.ipynb
-left_bus_dir_0.csv
-first_bus_dir_1.ipynb
-first_bus_dir_1.csv
-first_bus.csv
-data.csv
-main.ipynb
-modified_main.ipynb
-new.csv
-test.csv
-test ML.ipynb
