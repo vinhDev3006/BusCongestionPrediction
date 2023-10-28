@@ -1,15 +1,23 @@
 import tkinter as tk
 from enum import Enum
-
+from time import strftime, localtime
 from tkintermapview import TkinterMapView
 from run_model import run_model
 
-class congestion_level(Enum):
+
+route_id_option = ["1700960", "300025"]
+direction_id_option = ["0", "1"]
+curr_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+
+
+class CongestionLevel(Enum):
     FREE = "gray"
     BASICALLY_FREE = "green"
     MILD_CONGESTED = "yellow"
     MODERATE_CONGESTED = "red"
     HEAVILY_CONGESTED = "brown"
+
+
 class App(tk.Tk):
     APP_NAME = "Simple Map"
     WIDTH = 800
@@ -25,22 +33,25 @@ class App(tk.Tk):
         self.marker_list = []
         self.marker_path = None
 
-
         # Create a frame for input fields
         input_frame = tk.Frame(self)
         input_frame.pack(padx=10, pady=10)
 
         # Input fields and labels
         tk.Label(input_frame, text="Enter Route ID:").grid(row=0, column=0, sticky="w")
-        self.route_id_entry = tk.Entry(input_frame)
+        self.route_id_value = tk.StringVar(input_frame)
+        self.route_id_value.set("Select")
+        self.route_id_entry = tk.OptionMenu(input_frame, self.route_id_value, *route_id_option)
         self.route_id_entry.grid(row=0, column=1)
 
         tk.Label(input_frame, text="Enter Direction ID:").grid(row=1, column=0, sticky="w")
-        self.direction_id_entry = tk.Entry(input_frame)
+        self.direction_id_value = tk.StringVar(input_frame)
+        self.direction_id_value.set("Select")
+        self.direction_id_entry = tk.OptionMenu(input_frame, self.direction_id_value, *direction_id_option)
         self.direction_id_entry.grid(row=1, column=1)
 
-        tk.Label(input_frame, text="Enter Future Time:").grid(row=2, column=0, sticky="w")
-        self.future_time_entry = tk.Entry(input_frame)
+        tk.Label(input_frame, text="Enter Time:").grid(row=2, column=0, sticky="w")
+        self.future_time_entry = tk.Entry(input_frame, textvariable=tk.StringVar(input_frame, value=curr_time))
         self.future_time_entry.grid(row=2, column=1)
 
         # Run Model button
@@ -53,11 +64,14 @@ class App(tk.Tk):
         self.map_widget.set_address("Cologne")
 
     def run_model_from_gui(self):
-        # Get the input values from the GUI entry fields
-        route_id = int(self.route_id_entry.get())
-        direction_id = int(self.direction_id_entry.get())
-        future_time = self.future_time_entry.get()
 
+        self.map_widget.delete_all_marker()
+        self.map_widget.delete_all_path()
+
+        # Get the input values from the GUI entry fields
+        route_id = int(self.route_id_value.get())
+        direction_id = int(self.direction_id_value.get())
+        future_time = self.future_time_entry.get()
 
         df = run_model(route_id, direction_id, future_time)
         location_list = list(zip(df['stop_lat'], df['stop_lon'], df['congestion_level']))
@@ -75,33 +89,27 @@ class App(tk.Tk):
             _, _, color = start  # Extract the congestion level as the color
 
             if color <= 1:
-                level = congestion_level.FREE
+                level = CongestionLevel.FREE
             elif 1 < color <= 2:
-                level = congestion_level.BASICALLY_FREE
+                level = CongestionLevel.BASICALLY_FREE
             elif 2 < color <= 3:
-                level = congestion_level.MILD_CONGESTED
+                level = CongestionLevel.MILD_CONGESTED
             elif 3 < color <= 4:
-                level = congestion_level.MODERATE_CONGESTED
+                level = CongestionLevel.MODERATE_CONGESTED
             else:
-                level = congestion_level.HEAVILY_CONGESTED
+                level = CongestionLevel.HEAVILY_CONGESTED
 
             self.map_widget.set_path([start[:2], end[:2]], color=level.value)
 
         first_marker = location_list[0]
         self.map_widget.set_position(first_marker[0], first_marker[1])
 
-
-
-    def clear_marker_event(self):
-        for marker in self.marker_list:
-            marker.delete()
-        self.map_widget.delete_all_path()
-
-    def on_closing(self, event=0):
+    def on_closing(self):
         self.destroy()
 
     def start(self):
         self.mainloop()
+
 
 if __name__ == "__main__":
     app = App()
