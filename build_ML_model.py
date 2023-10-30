@@ -19,8 +19,9 @@ df['arrival_time'] = pd.to_datetime(df['arrival_time'])
 df = df.sort_values(by=['arrival_time'])
 
 # -- Select features and target --
-X = df[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'speed_kmh',
-        'segment_max_speed_kmh', 'runtime_sec', 'direction_id', 'distance_m']]
+X = df[
+    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
+     'direction_id']]
 Y = df['congestion_level']
 
 # -- Normalize feature data --
@@ -64,15 +65,12 @@ Y_pred_1d = Y_pred.reshape(-1)  # Reshape to a 1D array
 mse = mean_squared_error(Y_test_1d, Y_pred_1d)
 print(f"Mean Squared Error: {mse}")
 
-
 # -- Save the trained model to a file --
-model.save(os.path.join("model","LSTM_1_model_saved_model"))
-
+model.save(os.path.join("model", "LSTM_1_model_saved_model"))
 
 # -- Example for making predictions --
 input_data = X_test[10:20]  # Adjust the slice as needed
 predicted_congestion = model.predict(input_data)
-
 
 print("Predicted Congestion Level:", predicted_congestion)
 

@@ -17,8 +17,9 @@ test = pd.read_csv(os.path.join("dataset", "legacy_code/test.csv"))
 
 # Ensure the new data is preprocessed in the same way as the training data
 scaler = MinMaxScaler()
-X_new = test[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'speed_kmh',
-              'segment_max_speed_kmh', 'runtime_sec', 'direction_id', 'distance_m']]
+X_new = test[
+    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
+     'direction_id']]
 X_new = scaler.fit_transform(X_new)
 
 # Define the sequence length (seq_length) used during training
@@ -42,7 +43,9 @@ timestamps = test['arrival_time'].iloc[seq_length - 1:num_objects]
 # Make predictions
 predicted_congestion = model.predict(X_seq_new)
 
-location = test[["stop_lat", "stop_lon", "next_lat", "next_lon", "arrival_hour", "arrival_minute"]]
+location = test[
+    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
+     'direction_id']]
 location["congestion_level"] = predicted_congestion
 
 print(location)
@@ -55,5 +58,3 @@ plt.xlabel("Time Steps - Location")
 plt.ylabel("Congestion Level")
 plt.title("Actual vs. Predicted Congestion Levels")
 plt.show()
-
-

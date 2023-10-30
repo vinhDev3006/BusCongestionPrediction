@@ -12,9 +12,9 @@ df = pd.read_csv(FILE_PATH)
 
 
 # -- Choose features --
-col = ['trip_id', 'start_stop_id', 'arrival_time', 'stop_sequence_x', 'stop_lat', 'stop_lon', 'route_id',
-       'direction_id', 'speed_kmh', 'segment_max_speed_kmh', 'runtime_sec', 'end_stop_id', 'distance_m']
-df = df[col]
+# col = ['trip_id', 'start_stop_id', 'arrival_time', 'stop_sequence_x', 'stop_lat', 'stop_lon', 'route_id',
+#        'direction_id', 'speed_kmh', 'segment_max_speed_kmh', 'runtime_sec', 'end_stop_id', 'distance_m']
+# df = df[col]
 
 
 # -- Convert 'arrival-time' object to datetime64[ns] --
@@ -121,8 +121,7 @@ df['arrival_hour'] = df['arrival_time'].dt.hour
 df['arrival_minute'] = df['arrival_time'].dt.minute
 
 df = df[['trip_id', 'start_stop_id', 'arrival_time', 'arrival_hour', 'arrival_minute', 'stop_sequence_x', 'stop_lat',
-         'stop_lon', 'route_id', 'direction_id', 'speed_kmh', 'segment_max_speed_kmh', 'runtime_sec', 'end_stop_id',
-         'distance_m', 'next_lat', 'next_lon', 'congestion_level']]
+         'stop_lon', 'route_id', 'direction_id', 'runtime_sec', 'end_stop_id', 'next_lat', 'next_lon', 'congestion_level']]
 
 df = df.sort_values(by=['trip_id','arrival_time'])
 df = df.sort_values(by=['trip_id','direction_id'])
