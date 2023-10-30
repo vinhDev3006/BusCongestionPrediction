@@ -44,7 +44,7 @@ def run_model(route_id, direction_id, future_time):
 
     # Ensure the new data is preprocessed in the same way as the training data
     scaler = MinMaxScaler()
-    X_new = main_data[['start_stop_id', 'end_stop_id', 'arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'runtime_sec', 'direction_id']]
+    X_new = main_data[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
     X_new = scaler.fit_transform(X_new)
 
 

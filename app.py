@@ -47,11 +47,10 @@ def run_model(route_id, direction_id, future_time):
          'distance_m', 'next_lat', 'next_lon', 'congestion_level']]
 
 
-
     # Ensure the new data is preprocessed in the same way as the training data
     scaler = MinMaxScaler()
-    X_new = main_data[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'speed_kmh',
-                  'segment_max_speed_kmh', 'runtime_sec', 'direction_id', 'distance_m']]
+    X_new = main_data[ ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
+     'direction_id']]
     X_new = scaler.fit_transform(X_new)
 
 

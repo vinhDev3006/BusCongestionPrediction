@@ -5,11 +5,9 @@ import os
 import random
 import pandas as pd
 
-
 # -- Load file --
 FILE_PATH = os.path.join("dataset", "main_data.csv")
 df = pd.read_csv(FILE_PATH)
-
 
 # -- Choose features --
 # col = ['trip_id', 'start_stop_id', 'arrival_time', 'stop_sequence_x', 'stop_lat', 'stop_lon', 'route_id',
@@ -21,10 +19,8 @@ df = pd.read_csv(FILE_PATH)
 # df['arrival_time'] = pd.to_datetime(df['arrival_time'].dt.strftime('%H:%M:%S'))
 df['arrival_time'] = pd.to_datetime(df['arrival_time'])
 
-
 # -- Sort by 'direction_id' and 'trip_id' to categorize by bus trip and by its direction (left or right) --
 df = df.sort_values(by=['direction_id', 'trip_id'], ascending=[True, True])
-
 
 # -- Create 'decisive_speed' attributes to determine the 'congestion_level' --
 df['decisive_speed'] = df.apply(lambda row, weight=random.uniform(0.8, 0.9): (
@@ -39,13 +35,14 @@ congestion_levels = [0, 1, 2, 3]
 df['congestion_level'] = pd.np.select(conditions, congestion_levels, default=4)
 df = df.drop(['decisive_speed'], axis=1)
 df = df.drop_duplicates(
-    subset=['trip_id', 'start_stop_id', 'arrival_time', 'stop_sequence_x', 'stop_lat', 'stop_lon', 'route_id',
-            'direction_id', 'speed_kmh', 'segment_max_speed_kmh', 'runtime_sec', 'end_stop_id'])
+    subset=["trip_id", "start_stop_id", "arrival_time", "departure_time", "stop_sequence_x", "stop_name",
+            "stop_lat", "stop_lon", "route_id", "trip_headsign", "route_name", "direction_id", "stop_sequence_y",
+            "segment_name", "window", "speed_kmh", "avg_route_speed_kmh", "segment_max_speed_kmh", "runtime_sec",
+            "start_stop_name", "end_stop_name", "segment_id", "end_stop_id", "distance_m"])
 
 # -- Group the DataFrame by 'trip_id' and 'direction_id' for slicing and processing on each sub-dataset --
 df_sorted = df.sort_values(['trip_id', 'direction_id'])
 grouped = df_sorted.groupby(['trip_id', 'direction_id'])
-
 
 # -- Create new columns called 'next_lat' and 'next_lon' --
 subdatasets = []
@@ -73,8 +70,6 @@ merged_dataset.reset_index(drop=True, inplace=True)
 
 # Update the DataFrame
 df = merged_dataset
-
-
 
 # -- Update 'arrival_time' the previous time with the 'runtime-sec' --
 grouped = df.groupby(['trip_id', 'direction_id'])
@@ -113,18 +108,27 @@ df = merged_dataset
 
 # -- Create 'arrival_hour' and 'arrival_minute' --
 df = df[[
-    'trip_id', 'start_stop_id', 'arrival_time', 'stop_sequence_x', 'stop_lat', 'stop_lon', 'route_id', 'direction_id',
-    'speed_kmh', 'segment_max_speed_kmh', 'runtime_sec', 'end_stop_id', 'distance_m', 'next_lat', 'next_lon',
-    'congestion_level']]
+    "trip_id", "start_stop_id", "arrival_time", "departure_time", "stop_sequence_x", "stop_name", "stop_lat",
+    "stop_lon", "route_id", "trip_headsign", "route_name", "direction_id", "stop_sequence_y", "segment_name",
+    "window", "speed_kmh", "avg_route_speed_kmh", "segment_max_speed_kmh", "runtime_sec", "start_stop_name",
+    "end_stop_name", "segment_id", "end_stop_id", "distance_m", 'next_lat', 'next_lon', 'congestion_level']]
 
 df['arrival_hour'] = df['arrival_time'].dt.hour
 df['arrival_minute'] = df['arrival_time'].dt.minute
 
-df = df[['trip_id', 'start_stop_id', 'arrival_time', 'arrival_hour', 'arrival_minute', 'stop_sequence_x', 'stop_lat',
-         'stop_lon', 'route_id', 'direction_id', 'runtime_sec', 'end_stop_id', 'next_lat', 'next_lon', 'congestion_level']]
+df = df[
+    ["trip_id", "trip_headsign", "stop_name", "start_stop_id", "stop_lat", "stop_lon", "arrival_time", 'arrival_hour',
+     'arrival_minute',
+     "stop_sequence_x", "route_id", "route_name", "direction_id", "stop_sequence_y", "segment_name", "window",
+     "speed_kmh", "avg_route_speed_kmh",
+     "segment_max_speed_kmh", "runtime_sec", "start_stop_name", "end_stop_name", "segment_id", "end_stop_id",
+     'next_lat', 'next_lon',
+     "distance_m", 'congestion_level']]
 
-df = df.sort_values(by=['trip_id','arrival_time'])
-df = df.sort_values(by=['trip_id','direction_id'])
+df = df.sort_values(by=['trip_id', 'arrival_time'])
+df = df.sort_values(by=['trip_id', 'direction_id'])
+# df['arrival_time'] = pd.to_datetime(df['arrival_time'])
+# df = df.sort_values(by=['arrival_time'])
 
 # df = df.sort_values(by=['arrival_time'])
 

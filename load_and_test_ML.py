@@ -13,13 +13,12 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 model = keras.models.load_model(os.path.abspath(os.path.join("model", "LSTM_1_model_saved_model")))
 
 # Load the test dataset
-test = pd.read_csv(os.path.join("dataset", "legacy_code/test.csv"))
+test = pd.read_csv(os.path.join("dataset", "test.csv"))
 
 # Ensure the new data is preprocessed in the same way as the training data
 scaler = MinMaxScaler()
 X_new = test[
-    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
-     'direction_id']]
+    ['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
 X_new = scaler.fit_transform(X_new)
 
 # Define the sequence length (seq_length) used during training
@@ -44,8 +43,7 @@ timestamps = test['arrival_time'].iloc[seq_length - 1:num_objects]
 predicted_congestion = model.predict(X_seq_new)
 
 location = test[
-    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
-     'direction_id']]
+    ['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
 location["congestion_level"] = predicted_congestion
 
 print(location)

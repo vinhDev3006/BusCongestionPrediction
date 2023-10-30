@@ -20,8 +20,7 @@ df = df.sort_values(by=['arrival_time'])
 
 # -- Select features and target --
 X = df[
-    ['arrival_hour', 'arrival_minute', "start_stop_id", 'stop_lat', 'stop_lon', "end_stop_id", 'next_lat', 'next_lon',
-     'direction_id']]
+    ['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
 Y = df['congestion_level']
 
 # -- Normalize feature data --
@@ -69,14 +68,14 @@ print(f"Mean Squared Error: {mse}")
 model.save(os.path.join("model", "LSTM_1_model_saved_model"))
 
 # -- Example for making predictions --
-input_data = X_test[10:20]  # Adjust the slice as needed
+input_data = X_test[10:40]  # Adjust the slice as needed
 predicted_congestion = model.predict(input_data)
 
 print("Predicted Congestion Level:", predicted_congestion)
 
 # -- Plot the predicted and actual congestion levels --
-plt.figure(figsize=(12, 6))
-plt.plot(Y_test[10:20], label="Actual Congestion")
+plt.figure(figsize=(24, 6))
+plt.plot(Y_test[10:40], label="Actual Congestion")
 plt.plot(predicted_congestion, label="Predicted Congestion")
 plt.legend()
 plt.xlabel("Time Steps")
