@@ -1,25 +1,19 @@
-"""
-    TEST MODEL AGAINST TEST DATASET
-"""
 import os
-import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow import keras
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
 
 # Load the pre-trained model
-model = keras.models.load_model(os.path.abspath(os.path.join("model", "LSTM_1_model_saved_model")))
+model = tf.keras.models.load_model("model/LSTM_1_model_saved_model")
 
 # Load the test dataset
-test = pd.read_csv(os.path.join("dataset", "test.csv"))
+test = pd.read_csv("dataset/test.csv")
 
 # Ensure the new data is preprocessed in the same way as the training data
-scaler = MinMaxScaler()
-X_new = test[
-    ['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
-X_new = scaler.fit_transform(X_new)
+scaler = tf.keras.layers.experimental.preprocessing.Normalization()
+scaler.adapt(test[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']])
+X_new = scaler(test[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']])
 
 # Define the sequence length (seq_length) used during training
 seq_length = 64
@@ -34,7 +28,7 @@ for i in range(num_objects):
     X_seq_new.append(sequence)
 
 # Pad sequences to ensure consistent length
-X_seq_new = pad_sequences(X_seq_new, maxlen=seq_length, dtype='float32', padding='post', truncating='post')
+X_seq_new = tf.keras.preprocessing.sequence.pad_sequences(X_seq_new, maxlen=seq_length, dtype='float32', padding='post', truncating='post')
 
 # Assuming 'arrival_time' is the column in the 'test' DataFrame representing the time steps
 timestamps = test['arrival_time'].iloc[seq_length - 1:num_objects]
@@ -42,11 +36,12 @@ timestamps = test['arrival_time'].iloc[seq_length - 1:num_objects]
 # Make predictions
 predicted_congestion = model.predict(X_seq_new)
 
-location = test[
-    ['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']]
-location["congestion_level"] = predicted_congestion
+# Create a DataFrame with location and predicted congestion
+location = test[['arrival_hour', 'arrival_minute', 'stop_lat', 'stop_lon', 'next_lat', 'next_lon', 'direction_id']].copy()
+location['congestion_level'] = predicted_congestion
 
 print(location)
+
 # Plot the predicted and actual congestion levels
 plt.figure(figsize=(12, 6))
 plt.plot(test['congestion_level'], label="Actual Congestion")
